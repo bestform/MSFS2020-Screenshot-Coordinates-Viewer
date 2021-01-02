@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<title>OpenLayers Simplest Example</title>
+<div id="Map" style="height:800px"></div>
+<script src="static/OpenLayers.js"></script>
+<script>
+    map = new OpenLayers.Map("Map");
+    var mapnik         = new OpenLayers.Layer.OSM();
+    map.addLayer(mapnik);
+
+    var markers = new OpenLayers.Layer.Markers( "Markers" );
+    map.addLayer(markers);
+
+    // repeat this for every screenshot
+    {{range .}}
+        var lat            = {{ .Lat }};
+        var lon            = {{ .Lon }};
+
+        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+        var position       = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+
+        var marker = new OpenLayers.Marker(position);
+
+        marker.events.register('mousedown', marker,
+            function(evt) {
+                window.open("/img/{{ .Filename }}"); OpenLayers.Event.stop(evt);
+            }
+        );
+        markers.addMarker(marker);
+    {{end}}
+    // end repetition
+
+    map.setCenter(position, 10);
+</script>
