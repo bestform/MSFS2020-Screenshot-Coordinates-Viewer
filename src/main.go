@@ -28,7 +28,7 @@ func main() {
 	// image files
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir(*directory))))
 
-	log.Printf("Serving %s on HTTP port: %s\n", "./resources", *port)
+	log.Printf("Serving on HTTP port: %s\n", *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
