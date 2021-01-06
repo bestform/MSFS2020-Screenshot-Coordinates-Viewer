@@ -12,12 +12,16 @@ import (
 
 func main() {
 	port := flag.String("p", "8080", "port to serve on")
-	directory := flag.String("d", "", "the directory of static file to host")
+	directory := flag.String("d", "", "the directory of screenshots to host")
 	flag.Parse()
 
 	if *directory == "" {
-		println("Please specify the screenshot directory with -d")
-		os.Exit(1)
+		fromEnv := os.Getenv("MSFS_SCREENSHOT_FOLDER")
+		if fromEnv == "" {
+			println("Please specify the screenshot directory with -d or via the env var MSFS_SCREENSHOT_FOLDER")
+			os.Exit(1)
+		}
+		*directory = fromEnv
 	}
 
 	http.HandleFunc("/", handleIndex(*directory))
